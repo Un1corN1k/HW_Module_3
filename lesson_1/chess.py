@@ -26,13 +26,13 @@ class Figure:
         if _check_if_in_board(new_place):
             self._place = new_place
 
-    def check_move(self, new_place: tuple) -> Any:
-        return _check_if_in_board(new_place)
+    def check_move(self, new_place: tuple) -> bool:
+        raise NotImplementedError
 
 
 class Pawn(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
@@ -42,7 +42,7 @@ class Pawn(Figure):
 
 class King(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
@@ -51,7 +51,7 @@ class King(Figure):
 
 class Rook(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
@@ -60,7 +60,7 @@ class Rook(Figure):
 
 class Bishop(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
@@ -69,7 +69,7 @@ class Bishop(Figure):
 
 class Queen(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
@@ -80,7 +80,7 @@ class Queen(Figure):
 
 class Knight(Figure):
     def check_move(self, new_place: tuple) -> bool:
-        if not super().check_move(new_place):
+        if not _check_if_in_board(new_place):
             return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
