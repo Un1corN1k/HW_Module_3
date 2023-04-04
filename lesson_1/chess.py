@@ -25,7 +25,6 @@ class Figure:
     def change_place(self, new_place: tuple) -> None:
         if _check_if_in_board(new_place):
             self._place = new_place
-            print(f'Figure {self.__class__.__name__} is moved to {new_place}')
 
     def check_move(self, new_place: tuple) -> Any:
         if _check_if_in_board(new_place):
