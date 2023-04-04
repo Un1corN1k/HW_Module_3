@@ -27,12 +27,13 @@ class Figure:
             self._place = new_place
 
     def check_move(self, new_place: tuple) -> Any:
-        if _check_if_in_board(new_place):
-            raise NotImplementedError
+        return _check_if_in_board(new_place)
 
 
 class Pawn(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         return (self._color == "white" and new_vertical == old_vertical + 1 and new_horizontal == old_horizontal) or (
@@ -41,6 +42,8 @@ class Pawn(Figure):
 
 class King(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         return abs(new_horizontal - old_horizontal) <= 1 and abs(new_vertical - old_vertical) <= 1
@@ -48,6 +51,8 @@ class King(Figure):
 
 class Rook(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         return old_vertical == new_vertical or old_horizontal == new_horizontal
@@ -55,6 +60,8 @@ class Rook(Figure):
 
 class Bishop(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         return abs(new_vertical - old_vertical) == abs(new_horizontal - old_horizontal)
@@ -62,6 +69,8 @@ class Bishop(Figure):
 
 class Queen(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         as_bishop = abs(new_vertical - old_vertical) == abs(new_horizontal - new_horizontal)
@@ -71,6 +80,8 @@ class Queen(Figure):
 
 class Knight(Figure):
     def check_move(self, new_place: tuple) -> bool:
+        if not super().check_move(new_place):
+            return False
         old_horizontal, old_vertical = self._place
         new_horizontal, new_vertical = new_place
         vertical_diff = abs(old_vertical - new_vertical)
