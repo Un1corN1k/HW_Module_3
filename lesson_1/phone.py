@@ -1,61 +1,58 @@
 class Phone:
-    _counter = 0
-    description = ""
-    ph_number = " "
+    _counter: int = 0
+    description: str = "Nobody"
+    ph_number: str = "+380000000000"
 
-    def change_number(self, ph_number ):
+    def change_number(self, ph_number) -> str:
         self.ph_number = ph_number
-        return ph_number
 
-    def output_count_callings(self):
+    def description_call(self, description) -> str:
+        self.description = description
+
+    def count_callings(self) -> int:
         return self._counter
 
-    def count_callings(self):
+    def accept_call(self) -> int:
         self._counter += 1
-        return self._counter
+
+    def __repr__(self):
+        return f'You have {self._counter} call from {self.description}, whose number {self.ph_number}'
 
 
-lst = ["Sasha", "+380678435125"]
+lst_my = ["Sasha", "+380678435125"]
+lst_his = ['Oleg', '+380953475243']
+lst_her = ['Diana', '+380503247002']
+
 my_ph = Phone()
-my_ph.count_callings()
-my_ph.count_callings()
-my_ph.ph_number = lst[1]
-my_ph.description = lst[0]
-my_out_ph = my_ph.output_count_callings()
+his_ph = Phone()
+her_ph = Phone()
+
+my_ph.change_number(lst_my[1])
+my_ph.description_call(lst_my[0])
+my_ph.accept_call()
+my_ph.accept_call()
+my_ph.accept_call()
+
+his_ph.change_number(lst_his[1])
+his_ph.description_call(lst_his[0])
+his_ph.accept_call()
+his_ph.accept_call()
+his_ph.accept_call()
+his_ph.accept_call()
+
+her_ph.description_call(lst_her[0])
+her_ph.change_number(lst_her[1])
+her_ph.accept_call()
+her_ph.accept_call()
+her_ph.accept_call()
+
+print(my_ph)
+print(his_ph)
+print(her_ph)
 
 
-lst = ["Oleg", "+380954123678"]
-my_ph1 = Phone()
-my_ph1.count_callings()
-my_ph1.count_callings()
-my_ph1.count_callings()
-my_ph1.count_callings()
-my_ph1.ph_number = lst[1]
-my_ph1.description = lst[0]
-my_out_ph1 = my_ph1.output_count_callings()
+def answering_machine(lst_ph: tuple) -> int:
+    return sum(i.count_callings() for i in lst_ph)
 
 
-lst = ["Dmitro", "+380507823478"]
-my_ph2 = Phone()
-my_ph2.count_callings()
-my_ph2.count_callings()
-my_ph2.count_callings()
-my_ph2.count_callings()
-my_ph2.count_callings()
-my_ph2.count_callings()
-my_ph2.ph_number = lst[1]
-my_ph2.description = lst[0]
-my_out_ph2 = my_ph2.output_count_callings()
-
-
-def answering_machine():
-    list_ph = (my_ph.ph_number, my_ph1.ph_number, my_ph2.ph_number)
-    list_description = (my_ph.description, my_ph1.description, my_ph2.description)
-    list_out_ph = (my_out_ph, my_out_ph1, my_out_ph2)
-    answer = zip(list_description, list_ph, list_out_ph)
-    out_call = sum(list_out_ph)
-    print([f'{d} called you, his phone number {ph}, you have {out} missed calls.' for d, ph, out in answer])
-    print('Total you have ', out_call, ' missed calls.')
-
-
-print(answering_machine())
+print(answering_machine([my_ph, his_ph, her_ph]))
