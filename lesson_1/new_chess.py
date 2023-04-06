@@ -9,7 +9,6 @@ def check_if_in_board(new_position: Tuple[int, int]) -> bool:
 class Figure:
     _color: str = "white"
     _position: tuple = (1, 1)
-    new_position: tuple = (1, 1)
 
     def info(self):
         return 'place_board is {} and color is {}'.format(self._position, self._color)
@@ -29,9 +28,6 @@ class Figure:
     def move(self, position: tuple) -> bool:
         raise NotImplementedError
 
-    def __repr__(self):
-        return f'You can move your {self.__class__.__name__} from {self._position} into position {self.new_position}'
-
 
 class Rook(Figure):
     def move(self, position: tuple) -> bool:
@@ -40,18 +36,20 @@ class Rook(Figure):
         new_x, new_y = position
         curr_x, curr_y = self._position
         delta = curr_x - new_x, curr_y - new_y
-        self.new_position = position
-        return 0 in delta
+        if 0 in delta:
+            self.set_position(position)
+            return position
 
 
 class Bishop(Figure):
-    def move(self, position: tuple) -> bool:
+    def move(self, position: tuple):
         if not check_if_in_board(position):
             return False
         new_x, new_y = position
         curr_x, curr_y = self._position
-        self.new_position = position
-        return abs(new_x - curr_x) == abs(new_y - curr_y)
+        if abs(new_x - curr_x) == abs(new_y - curr_y):
+            self.set_position(position)
+            return position
 
 
 class Queen(Figure):
@@ -62,8 +60,9 @@ class Queen(Figure):
         curr_x, curr_y = self._position
         delta = curr_x - new_x, curr_y - new_y
         x, y = delta
-        self.new_position = position
-        return x == y or 0 in delta
+        if x == y or 0 in delta:
+            self.set_position(position)
+            return position
 
 
 class King(Figure):
@@ -72,8 +71,9 @@ class King(Figure):
             return False
         new_x, new_y = position
         curr_x, curr_y = self._position
-        self.new_position = position
-        return abs(new_x - curr_x) <= 1 and abs(new_y - curr_y) <= 1
+        if abs(new_x - curr_x) <= 1 and abs(new_y - curr_y) <= 1:
+            self.set_position(position)
+            return position
 
 
 class Pawn(Figure):
@@ -82,9 +82,10 @@ class Pawn(Figure):
             return False
         new_x, new_y = position
         curr_x, curr_y = self._position
-        self.new_position = position
-        return (self._color == "white" and new_y == curr_y + 1 and new_x == curr_x) or (
-                    self._color == "black" and new_y == curr_y - 1 and new_x == curr_x)
+        if (self._color == "white" and new_y == curr_y + 1 and new_x == curr_x) or (
+                self._color == "black" and new_y == curr_y - 1 and new_x == curr_x):
+            self.set_position(position)
+            return position
 
 
 class Knight(Figure):
@@ -95,8 +96,9 @@ class Knight(Figure):
         curr_x, curr_y = self._position
         x_delta = curr_x - new_x
         y_delta = curr_y - new_y
-        self.new_position = position
-        return (x_delta == 1 and y_delta == 2) or (x_delta == 2 and y_delta == 1)
+        if (x_delta == 1 and y_delta == 2) or (x_delta == 2 and y_delta == 1):
+            self.set_position(position)
+            return position
 
 
 def get_figures_which_can_move(figures_to_check: List[Figure], position: tuple) -> List[Figure]:

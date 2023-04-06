@@ -3,20 +3,17 @@ class Phone:
     description: str = "Nobody"
     ph_number: str = "+380000000000"
 
-    def change_number(self, ph_number) -> str:
+    def change_number(self, ph_number) -> None:
         self.ph_number = ph_number
 
-    def description_call(self, description) -> str:
+    def call_description(self, description) -> None:
         self.description = description
 
     def count_callings(self) -> int:
         return self._counter
 
-    def accept_call(self) -> int:
+    def accept_call(self) -> None:
         self._counter += 1
-
-    def __repr__(self):
-        return f'You have {self._counter} call from {self.description}, whose number {self.ph_number}'
 
 
 lst_my = ["Sasha", "+380678435125"]
@@ -28,19 +25,21 @@ his_ph = Phone()
 her_ph = Phone()
 
 my_ph.change_number(lst_my[1])
-my_ph.description_call(lst_my[0])
+my_ph.call_description(lst_my[0])
+my_ph.accept_call()
+my_ph.accept_call()
 my_ph.accept_call()
 my_ph.accept_call()
 my_ph.accept_call()
 
 his_ph.change_number(lst_his[1])
-his_ph.description_call(lst_his[0])
+his_ph.call_description(lst_his[0])
 his_ph.accept_call()
 his_ph.accept_call()
 his_ph.accept_call()
 his_ph.accept_call()
 
-her_ph.description_call(lst_her[0])
+her_ph.call_description(lst_her[0])
 her_ph.change_number(lst_her[1])
 her_ph.accept_call()
 her_ph.accept_call()
