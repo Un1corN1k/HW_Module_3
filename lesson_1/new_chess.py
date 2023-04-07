@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 
-def check_if_in_board(new_position: Tuple[int, int]) -> bool:
+def within_board(new_position: Tuple[int, int]) -> bool:
     x, y = new_position
     return 0 <= x <= 7 and 0 <= y <= 7
 
@@ -14,7 +14,7 @@ class Figure:
         return 'place_board is {} and color is {}'.format(self._position, self._color)
 
     def set_position(self, new_position):
-        if check_if_in_board(new_position):
+        if within_board(new_position):
             self._position = new_position
         else:
             print("Not on board")
@@ -25,84 +25,63 @@ class Figure:
         elif self._color == "black":
             self._color = "white"
 
-    def move(self, position: tuple) -> bool:
+    def can_move(self, position: tuple) -> bool:
         raise NotImplementedError
+
+    def get_delta(self, position: Tuple[int, int]) -> Tuple[int, int]:
+        new_x, new_y = position
+        curr_x, curr_y = self._position
+
+        return curr_x - new_x, curr_y - new_y
 
 
 class Rook(Figure):
-    def move(self, position: tuple) -> bool:
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        delta = curr_x - new_x, curr_y - new_y
-        if 0 in delta:
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            return dx == 0 or dy == 0
 
 
 class Bishop(Figure):
-    def move(self, position: tuple):
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        if abs(new_x - curr_x) == abs(new_y - curr_y):
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            return abs(dx) == abs(dy)
 
 
 class Queen(Figure):
-    def move(self, position: tuple) -> bool:
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        delta = curr_x - new_x, curr_y - new_y
-        x, y = delta
-        if x == y or 0 in delta:
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            return(abs(dx) == abs(dy)) or (dx == 0 or dy == 0)
 
 
 class King(Figure):
-    def move(self, position: tuple) -> bool:
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        if abs(new_x - curr_x) <= 1 and abs(new_y - curr_y) <= 1:
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            return dx <= 1 and dy <= 1
 
 
 class Pawn(Figure):
-    def move(self, position: tuple) -> bool:
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        if (self._color == "white" and new_y == curr_y + 1 and new_x == curr_x) or (
-                self._color == "black" and new_y == curr_y - 1 and new_x == curr_x):
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            if self._color == "black" and (dx == 0 and dy == 1):
+                return True
+            if self._color == "white" and (dx == 0 and dy == -1):
+                return True
 
 
 class Knight(Figure):
-    def move(self, position: tuple) -> bool:
-        if not check_if_in_board(position):
-            return False
-        new_x, new_y = position
-        curr_x, curr_y = self._position
-        x_delta = curr_x - new_x
-        y_delta = curr_y - new_y
-        if (x_delta == 1 and y_delta == 2) or (x_delta == 2 and y_delta == 1):
-            self.set_position(position)
-            return position
+    def can_move(self, position: tuple) -> bool:
+        if within_board(position):
+            dx, dy = self.get_delta(position)
+            return (dx == 1 and dy == 2) or (dx == 2 and dy == 1)
 
 
 def get_figures_which_can_move(figures_to_check: List[Figure], position: tuple) -> List[Figure]:
-    return [figure for figure in figures_to_check if figure.move(position)]
+    return [figure for figure in figures_to_check if figure.can_move(position)]
 
 
 pawn1 = Pawn()
@@ -125,10 +104,22 @@ knight2 = Knight()
 knight3 = Knight()
 
 pawn1.set_position((3, 3))
+pawn3.set_position((4, 3))
+king1.set_position((5, 4))
 king2.set_position((4, 4))
-bishop2.set_position((6, 1))
-knight3.set_position((5, 5))
+king3.set_position((4, 6))
+rook3.set_position((7, 7))
+rook2.set_position((3, 7))
+rook1.set_position((7, 4))
+bishop1.set_position((6, 1))
+bishop2.set_position((6, 5))
+bishop3.set_position((6, 7))
+knight1.set_position((3, 5))
+knight2.set_position((5, 5))
+knight3.set_position((5, 7))
 queen1.set_position((3, 7))
+queen2.set_position((1, 4))
+queen1.set_position((3, 3))
 pawn2.change_color()
 pawn2.set_position((3, 5))
 
