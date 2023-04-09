@@ -50,6 +50,7 @@ class Bishop(Figure):
             return abs(dx) == abs(dy)
         return False
 
+
 class Queen(Figure):
     def can_move(self, position: Tuple[int, int]) -> bool:
         if within_board(position):
@@ -57,12 +58,14 @@ class Queen(Figure):
             return(abs(dx) == abs(dy)) or (dx == 0 or dy == 0)
         return False
 
+
 class King(Figure):
     def can_move(self, position: Tuple[int, int]) -> bool:
         if within_board(position):
             dx, dy = self.get_delta(position)
             return dx <= 1 and dy <= 1
         return False
+
 
 class Pawn(Figure):
     def can_move(self, position: Tuple[int, int]) -> bool:
@@ -74,12 +77,14 @@ class Pawn(Figure):
                 return True
         return False
 
+
 class Knight(Figure):
     def can_move(self, position: Tuple[int, int]) -> bool:
         if within_board(position):
             dx, dy = self.get_delta(position)
             return (dx == 1 and dy == 2) or (dx == 2 and dy == 1)
         return False
+
 
 def get_figures_which_can_move(figures_to_check: List[Figure], position: Tuple[int, int]) -> List[Figure]:
     return [figure for figure in figures_to_check if figure.can_move(position)]
