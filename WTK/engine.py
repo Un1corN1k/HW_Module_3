@@ -11,6 +11,7 @@ def play():
     while player.health >= 1:
         play_attack()
         play_def()
-    print(f"{name}, you lose.\nYou defeat Boss level {enemy.level}, and have {player.score} score!")
+    print(f"{name}, you lose.\nYou defeat Boss level {enemy.level}, "
+          f"and have {player.score} score!")
 
 play()

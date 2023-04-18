@@ -4,7 +4,3 @@ class EnemyDown(Exception):
 
 class GameOver(Exception):
     """Exception when the player is defeated"""
-
-
-
-
