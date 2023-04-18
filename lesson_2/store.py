@@ -9,9 +9,6 @@ class ShoppingCart:
     def __eq__(self, other):
         return self.products == other.products and self.quantities == other.quantities
 
-    def __ne__(self, other):
-        return not (self.__eq__(other))
-
     def __float__(self):
         return self.get_total() / 100
 
@@ -120,16 +117,8 @@ cart_1.add_product(sweet, 0.5)
 cart_2.add_product(candy, 2)
 cart_2.add_product(juice, 2)
 cart_2.add_product(sweet, 0.2)
-# cart_1.remove_product(candy)
-# card_processor = CardPaymentProcessor("1234")
-# card_processor.purchase(cart_1)
-# cash_processor = CashPaymentProcessor()
-# cash_processor.purchase(cart_1)
-
-
-# print(cart_1.sub_product(candy, 1))
-print(cart_1.get_total())
-
-
-
-
+cart_1.remove_product(candy)
+card_processor = CardPaymentProcessor("1234")
+card_processor.purchase(cart_1)
+cash_processor = CashPaymentProcessor()
+cash_processor.purchase(cart_1)
