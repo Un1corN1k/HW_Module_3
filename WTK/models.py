@@ -1,137 +1,106 @@
 import random
-from settings import *
-from exceptions import *
+import settings
+import exceptions
 
 
 class Enemy:
-    level = 0
 
-    def __init__(self):
-        self.level = INITIAL_ENEMY_LEVEL
-        self.health = self.level
+    def __init__(self, level=settings.INITIAL_ENEMY_LEVEL):
+        self.level = level
+        self.health = level
 
     def decrease_health(self):
-        try:
-            self.health -= 1
-            if self.health < 1:
-                raise EnemyDown
-        except EnemyDown:
-            self.level += 1
-            player.score += SCORE_ENEMY_DOWN
+        self.health -= 1
+        if self.health < 1:
+            raise exceptions.EnemyDown
 
     def select_attack(self):
-        self.attack = random.choice(['1', '2', '3'])
-        return self.attack
+        return random.choice(settings.VALID_CHOICES)
 
     def select_defence(self):
-        return random.choice(['1', '2', '3'])
+        return random.choice(settings.VALID_CHOICES)
 
 
 class Player:
     def __init__(self, name):
         self.name = name
         self.score = 0
-        self.health = INITIAL_PLAYER_HEALS
+        self.health = settings.INITIAL_PLAYER_HEALS
 
     def decrease_health(self):
-        try:
-            self.health -= 1
-            if self.health < 1:
-                raise GameOver
-        except GameOver:
-            pass
+        self.health -= 1
+        if self.health < 1:
+            raise exceptions.GameOver
+
+    @staticmethod
+    def _select_choice():
+        choice = None
+        while choice not in settings.VALID_CHOICES:
+            try:
+                choice = int(input("Choose your hero to attack: \n 1 - Wizard, 2 - Thief, 3 - Knight: "))
+            except ValueError:
+                pass
+
+        return choice
 
     def select_defence(self):
-        self.defence = input(f'Choose your hero to defence: \n 1 - Wizard, 2 - Thief, 3 - Knight: ')
-        return self.defence
+        return self._select_choice()
 
     def select_attack(self):
-        self.attack = input(f'Choose your hero to attack: \n 1 - Wizard, 2 - Thief, 3 - Knight: ')
-        return self.attack
+        return self._select_choice()
+
+    def attack(self, enemy):
+        attack = self.select_attack()
+        defence = enemy.select_defence()
+        fight_result = fight(attack, defence)
+
+        if fight_result == FightResult.SUCCESS:
+            try:
+                enemy.decrease_health()
+                self.score += settings.SCORE_SUCCESS_ATTACK
+            except exceptions.EnemyDown:
+                self.score += settings.SCORE_ENEMY_DOWN
+                raise
+            finally:
+                print(settings.SUCCESSFUL_ATTACK)
+
+        elif fight_result == FightResult.FAIL:
+            print(settings.FAILED_ATTACK)
+
+        elif fight_result == FightResult.DRAW:
+            print(settings.DRAW)
+
+        print('------------------------------------')
+
+    def defence(self, enemy):
+        defence = self.select_defence()
+        attack = enemy.select_attack()
+        fight_result = fight(attack, defence)
+
+        if fight_result == FightResult.SUCCESS:
+            print(settings.FAILED_DEFENCE)
+            self.decrease_health()
+
+        elif fight_result == FightResult.FAIL:
+            print(settings.SUCCESSFUL_DEFENCE)
+
+        elif fight_result == FightResult.DRAW:
+            print(settings.DRAW)
+
+        print('------------------------------------')
 
 
-player = Player("sasha")
-enemy = Enemy()
+class FightResult:
+
+    SUCCESS = 1
+    FAIL = -1
+    DRAW = 0
 
 
-def draw():
-    result = "IT'S A DRAW!"
-    return result
+def fight(attack, defence):
+    if attack == defence:
+        return FightResult.DRAW
 
-
-def victory_attack():
-    enemy.decrease_health()
-    player.score += 1
-    return f'YOUR ATTACK IS SUCCESSFUL!'
-
-
-def fail_attack():
-    player.decrease_health()
-    return f'YOUR ATTACK IS FAILED!'
-
-
-def victory_def():
-    enemy.decrease_health()
-    player.score += 1
-    return f'YOUR DEFENCE IS SUCCESSFUL!'
-
-
-def fail_def():
-    player.decrease_health()
-    return f'YOUR DEFENCE IS FAILED!'
-
-
-def play_attack():
-    choice = player.select_attack()
-    computer_choice = enemy.select_defence()
-    if choice == computer_choice:
-        print(draw())
-
-    elif choice == '1':
-        if computer_choice == '3':
-            print(victory_attack())
-        elif computer_choice == '2':
-            print(fail_attack())
-
-    elif choice == '2':
-        if computer_choice == '1':
-            print(victory_attack())
-        elif computer_choice == '3':
-            print(fail_attack())
-
-    elif choice == '3':
-        if computer_choice == '2':
-            print(victory_attack())
-        elif computer_choice == '1':
-            print(fail_attack())
-    else:
-        print('Try another number')
-    print('------------------------------------')
-
-
-def play_def():
-    choice = player.select_defence()
-    computer_choice = enemy.select_attack()
-    if choice == computer_choice:
-        print(draw())
-
-    elif choice == '1':
-        if computer_choice == '3':
-            print(victory_def())
-        elif computer_choice == '2':
-            print(fail_def())
-
-    elif choice == '2':
-        if computer_choice == '1':
-            print(victory_def())
-        elif computer_choice == '3':
-            print(fail_def())
-
-    elif choice == '3':
-        if computer_choice == '2':
-            print(victory_def())
-        elif computer_choice == '1':
-            print(fail_def())
-    else:
-        print('Try another number')
-    print('------------------------------------')
+    if (attack, defence) in settings.SUCCESSFUL_ATTACKS:
+        return FightResult.SUCCESS
+    return FightResult.FAIL
